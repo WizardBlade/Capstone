@@ -1,0 +1,391 @@
+ <DOCTYPE!html>
+<html>
+<title> My Capstone (draft #4) </title>
+<style>
+
+body {
+	background:black
+   }
+
+canvas {
+	position:relative;
+	left:250px;
+	top:100px;
+	background:#ADD8E6;
+	border:4px outset red;
+
+   }
+
+
+</style>
+
+
+
+
+
+
+<body id="maybe">
+
+<button 
+	type="button"
+	id="retry"
+	style="position: relative; top: 200px; left: 650; font-size: 50; font-family: times new roman; color: purple; background-color:grey; border-color:red;"
+	onclick= "startGame()"> 
+Start Game
+</button>
+
+<h1 
+	id="loss"
+	style="font-family: comic sans ms; color: magenta; font-size: 50; position: relative; left: 500px;">
+</h1>
+
+<button  
+	id='shut'
+	type="button" 
+	onclick="lightMode()"   
+	style="color:blue;"> 
+	Light Mode 
+</button>
+
+<button 
+	id="up"
+	type="button" 
+	onclick="darkMode()"   
+	style="color:red; background-color:black;">
+	Dark Mode 
+</button>
+
+
+
+
+
+<script>
+var canvasWidth = 1000;
+var canvasHeight = 500;
+var player;
+var playerYPosition = 500;
+var isJumping = false;
+var jumpSpeed = -7;
+var fallSpeed = 0.5;
+var block;
+var bird;
+var audio = new Audio('https://www.myinstants.com/media/sounds/wideputinfull.mp3');
+var audio2 = new Audio('https://www.myinstants.com/media/sounds/metal-pipe-clang.mp3');
+var score = 0;
+var scoreLabel;
+var interval = setInterval(updateCanvas, 20);
+
+	function startGame() {
+		gameCanvas.start();
+		player = new createPlayer(30, 30, 30);
+		block = new createBlock();
+		bird = new createBird();
+		scoreLabel = new createScoreLabel(10, 30);
+		document.getElementById('canvas').style.background = "#ADD8E6"
+		document.getElementById('canvas').style.border = "4px outset red"
+		document.getElementById('canvas').style.height = "500"
+		document.getElementById('canvas').style.width = "1000"
+		document.getElementById('loss').innerHTML = ""
+		document.getElementById('retry').innerHTML = ""
+		audio.play();
+		audio.loop = true;
+		audio2.pause();	
+		document.getElementById('shut').innerHTML = ""
+		document.getElementById('up').innerHTML = ""
+   }
+
+var gameCanvas = {
+	canvas: document.createElement("canvas"),
+	start: function() {
+		this.canvas.width = canvasWidth;
+		this.canvas.height = canvasHeight;
+		this.canvas.id = "canvas";
+		this.context = this.canvas.getContext("2d");
+		document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+	}
+   }
+
+
+	
+	
+	
+  
+
+
+	function createBlock() {
+	   var width = randomNumber(30, 75);
+	   var height = randomNumber(50, 150);
+	   var speed = randomNumber(6, 8);
+
+		this.x = canvasWidth;
+		this.y = canvasHeight - height;
+
+
+	this.draw = function() {
+		ctx = gameCanvas.context;
+		ctx.fillStyle = "black";
+		ctx.fillRect(this.x, this.y, width, height);
+   }
+  
+	this.attackPlayer = function() {
+		this.x -= speed;
+		this.returnToAttackPosition();
+    }
+	this.returnToAttackPosition = function() {
+		if (this.x < 0) {
+			width = randomNumber(30, 75);
+			height = randomNumber(100, 300);
+			speed = randomNumber(6, 8);
+			this.y = canvasHeight - height;
+			this.x = canvasWidth;
+			score++;
+   }
+  }
+ }
+
+
+	function createBird() {
+	   var initialWidth = randomNumber(30, 75);
+	   var initialHeight = randomNumber(50, 200);
+	   var speed = randomNumber(6, 8);
+
+		this.x = canvasWidth;
+		this.y = 0;
+		this.width = initialWidth; 
+		this.height = initialHeight; 
+
+	this.draw = function() {
+        	ctx = gameCanvas.context;
+        	ctx.fillStyle = "black";
+        	ctx.fillRect(this.x, this.y, this.width, this.height);
+    }
+
+	this.attackPlayer = function() {
+        	this.x -= speed;
+		this.returnToAttackPosition();
+    }
+
+	this.returnToAttackPosition = function() {
+        	if (this.x < 0) {
+			this.width = randomNumber(30, 75);
+			this.height = randomNumber(50, 200);
+			this.y = 0;
+			this.x = canvasWidth;
+        }
+    }
+}
+
+
+
+
+
+
+
+	function createPlayer(width, height, x) {
+		this.width = width;
+		this.height = height;
+		this.x = x;
+		this.y = playerYPosition;
+
+
+	this.draw = function() {
+		ctx = gameCanvas.context;
+		ctx.fillStyle = "purple";
+		ctx.fillRect(this.x, this.y, this.width, this.height);
+   }
+
+	this.makeFall = function() {
+		if (!isJumping && fallSpeed == 0) {
+			this.y += fallSpeed;
+			fallSpeed += 0.5;
+			this.stopPlayer();
+   }
+  }
+
+	this.stopPlayer = function() {
+		var ground = canvasHeight - this.height;
+		if (this.y > ground) {
+			this.y = ground;
+   }
+  }
+
+	this.noFly = function() {
+		if (this.y < 0) {
+			this.y = 0;
+   }
+ }
+
+	this.jump = function() {
+		if (isJumping && jumpSpeed < 0) {
+			this.y += jumpSpeed;
+			jumpSpeed += 0.2;
+		} else {
+			isJumping = false;
+			fallSpeed = 0; 
+			
+   }
+  }
+ }
+
+
+
+
+	function detectCollision() {
+
+	   var playerLeft = player.x;
+	   var playerRight = player.x + player.width;
+	   var playerBottom = player.y + player.height;
+	   var playerTop = player.y;
+	
+	   var blockLeft = block.x
+	   var blockRight = block.x + block.width
+	   var blockTop = block.y
+	
+	
+
+
+		if (playerRight > blockLeft &&
+	        playerLeft < blockLeft &&
+ 	        playerBottom > blockTop) {
+			document.getElementById('retry').innerHTML = "try again?"
+			document.getElementById('loss').innerHTML = "YOU LOSE! HAHAHA"
+			audio.pause();
+			document.getElementById('canvas');
+			canvas.remove();
+			audio2.play();
+			score = 0;
+			document.getElementById('shut').innerHTML = "Light Mode"
+			document.getElementById('up').innerHTML = "Dark Mode"
+   }
+  }
+
+	function deathBird() {
+
+	   var playerLeft = player.x;
+	   var playerRight = player.x + player.width;
+	   var playerBottom = player.y + player.height;
+	   var playerTop = player.y;
+
+	   var birdLeft = bird.x;
+	   var birdRight = bird.x + bird.width;
+	   var birdBottom = bird.y + bird.height;
+	   var birdTop = bird.y;
+
+
+
+		if (playerRight > birdLeft &&
+	        playerLeft < birdRight &&
+	        playerBottom > birdTop &&
+	        playerTop < birdBottom) {
+			document.getElementById('retry').innerHTML = "try again?"
+			document.getElementById('loss').innerHTML = "YOU LOSE! HAHAHA"
+			audio.pause();
+			document.getElementById('canvas');
+			canvas.remove();
+			audio2.play();
+			score = 0;
+			document.getElementById('shut').innerHTML = "Light Mode"
+			document.getElementById('up').innerHTML = "Dark Mode"
+   }
+  }
+	
+
+
+
+	function createScoreLabel(x, y) {
+		this.score = 0;
+		this.x = x;
+		this.y = y;
+		this.draw = function() {
+	        	ctx = gameCanvas.context;
+	       		ctx.font = "25px Comic Sans Ms";
+	       		ctx.fillStyle = "black";
+	        	ctx.fillText(this.text, this.x, this.y);
+	
+  	}
+   }
+
+	
+
+
+	function updateCanvas() {
+		detectCollision();
+		deathBird();
+	
+	
+
+		ctx = gameCanvas.context;
+		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+		
+		player.draw();
+		player.jump();
+		player.makeFall();
+		
+
+		block.draw();
+		block.attackPlayer();
+		bird.draw();
+		bird.attackPlayer();
+	
+		player.noFly();
+		player.stopPlayer();
+
+		scoreLabel.text = "SCORE: " + score;
+		scoreLabel.draw();
+
+	
+
+   }
+
+	
+
+
+	function randomNumber(min, max) {
+		return Math.floor(Math.random() * (max - min + 1) + min)
+   }
+
+
+
+
+	function resetJump() {
+		jumpSpeed = 0;
+   }
+	
+	
+
+	document.addEventListener('mousedown',  function(e) {
+		if (e.button == 0 && !isJumping) {
+		jumpSpeed = -7;
+		isJumping = true;
+		setTimeout(function() { resetJump(); }, 1000);
+   }
+  });
+
+	
+	function lightMode() {
+		document.getElementById('maybe').style.background = "white";
+}
+
+	function darkMode() {
+		document.getElementById('maybe').style.background = "black";
+}
+
+
+</script>
+
+
+
+
+<script src="./renderer.js"></script>
+
+
+
+
+
+</body>
+</html>
+ 
+ 
+ 
+ 
