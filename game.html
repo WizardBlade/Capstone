@@ -1,6 +1,6 @@
 <DOCTYPE!html>
 <html>
-<title> Crappy Bird (beta) </title>
+<title> Crappy Bird </title>
 <style>
 
 body {
@@ -29,7 +29,7 @@ canvas {
 <button 
 	type="button"
 	id="retry"
-	style="position: relative; top: 200px; left: 650; font-size: 50; font-family: times new roman; color: purple; background-color:grey; border-color:red;"
+	style="position: relative; top: 300px; left: 650; font-size: 50; font-family: times new roman; color: purple; background-color:grey; border-color:red;"
 	onclick= "startGame()"> 
 Start Game
 </button>
@@ -38,6 +38,11 @@ Start Game
 	id="loss"
 	style="font-family: comic sans ms; color: magenta; font-size: 50; position: relative; left: 500px;">
 </h1>
+
+<h2 
+id="high" 
+style="color:white; position: relative; left: 640px; bottom: 30px; font-size: 40;">
+</h2>
 
 <button  
 	id='shut'
@@ -72,6 +77,7 @@ var bird;
 var audio = new Audio('https://www.myinstants.com/media/sounds/wideputinfull.mp3');
 var audio2 = new Audio('https://www.myinstants.com/media/sounds/metal-pipe-clang.mp3');
 var score = 0;
+var highScore = localStorage.getItem('highScore') || 0;
 var scoreLabel;
 var interval = setInterval(updateCanvas, 20);
 
@@ -92,6 +98,7 @@ var interval = setInterval(updateCanvas, 20);
 		audio2.pause();	
 		document.getElementById('shut').innerHTML = ""
 		document.getElementById('up').innerHTML = ""
+		document.getElementById('high').innerHTML = ""
    }
 
 var gameCanvas = {
@@ -247,15 +254,7 @@ var gameCanvas = {
 		if (playerRight > blockLeft &&
 	        playerLeft < blockLeft &&
  	        playerBottom > blockTop) {
-			document.getElementById('retry').innerHTML = "try again?"
-			document.getElementById('loss').innerHTML = "YOU LOSE! HAHAHA"
-			audio.pause();
-			document.getElementById('canvas');
-			canvas.remove();
-			audio2.play();
-			score = 0;
-			document.getElementById('shut').innerHTML = "Light Mode"
-			document.getElementById('up').innerHTML = "Dark Mode"
+			endGame();
    }
   }
 
@@ -277,30 +276,37 @@ var gameCanvas = {
 	        playerLeft < birdRight &&
 	        playerBottom > birdTop &&
 	        playerTop < birdBottom) {
-			document.getElementById('retry').innerHTML = "try again?"
-			document.getElementById('loss').innerHTML = "YOU LOSE! HAHAHA"
-			audio.pause();
-			document.getElementById('canvas');
-			canvas.remove();
-			audio2.play();
-			score = 0;
-			document.getElementById('shut').innerHTML = "Light Mode"
-			document.getElementById('up').innerHTML = "Dark Mode"
+			endGame();
    }
   }
 	
-
-
+	function endGame() {
+		document.getElementById('retry').innerHTML = "try again?"
+		document.getElementById('loss').innerHTML = "YOU LOSE! HAHAHA"
+		audio.pause();
+		document.getElementById('canvas');
+		canvas.remove();
+		audio2.play();
+		document.getElementById('shut').innerHTML = "Light Mode"
+		document.getElementById('up').innerHTML = "Dark Mode"
+		document.getElementById('high').innerHTML = "High Score: " + highScore
+		if (score > highScore) {
+		 highScore = score;
+		 localStorage.setItem('highScore', highScore);
+	}
+		score = 0;
+}
 
 	function createScoreLabel(x, y) {
-		this.score = 0;
+		
 		this.x = x;
 		this.y = y;
 		this.draw = function() {
 	        	ctx = gameCanvas.context;
 	       		ctx.font = "25px Comic Sans Ms";
 	       		ctx.fillStyle = "black";
-	        	ctx.fillText(this.text, this.x, this.y);
+	        	ctx.fillText("SCORE: " + score, this.x, this.y);
+			ctx.fillText("HIGH SCORE: " + highScore, this.x, this.y + 30);
 	
   	}
    }
