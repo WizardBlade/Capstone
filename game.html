@@ -1,6 +1,6 @@
- <DOCTYPE!html>
+<DOCTYPE!html>
 <html>
-<title> My Capstone (draft #4) </title>
+<title> Crappy Bird </title>
 <style>
 
 body {
@@ -195,7 +195,7 @@ var gameCanvas = {
    }
 
 	this.makeFall = function() {
-		if (!isJumping && fallSpeed == 0) {
+		if (!isJumping) {
 			this.y += fallSpeed;
 			fallSpeed += 0.5;
 			this.stopPlayer();
@@ -221,7 +221,7 @@ var gameCanvas = {
 			jumpSpeed += 0.2;
 		} else {
 			isJumping = false;
-			fallSpeed = 0; 
+			 
 			
    }
   }
@@ -350,7 +350,7 @@ var gameCanvas = {
 
 	function resetJump() {
 		jumpSpeed = 0;
-		FallSpeed = 0;
+		fallSpeed = 0;
    }
 	
 	
@@ -378,7 +378,7 @@ var gameCanvas = {
 
 
 
-<script src="./renderer.js"></script>
+
 
 
 
@@ -386,7 +386,3 @@ var gameCanvas = {
 
 </body>
 </html>
- 
- 
- 
- 
