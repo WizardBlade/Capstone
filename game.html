@@ -1,6 +1,6 @@
 <DOCTYPE!html>
 <html>
-<title> Crappy Bird (beta) </title>
+<title> Crappy Bird </title>
 <style>
 
 body {
@@ -42,6 +42,7 @@ Start Game
 <h2 
 id="high" 
 style="color:white; position: relative; left: 640px; bottom: 30px; font-size: 40;">
+High Score: 
 </h2>
 
 <button  
@@ -289,11 +290,11 @@ var gameCanvas = {
 		audio2.play();
 		document.getElementById('shut').innerHTML = "Light Mode"
 		document.getElementById('up').innerHTML = "Dark Mode"
-		document.getElementById('high').innerHTML = "High Score: " + highScore
 		if (score > highScore) {
 		 highScore = score;
 		 localStorage.setItem('highScore', highScore);
 	}
+		document.getElementById('high').innerHTML = "High Score: " + highScore
 		score = 0;
 }
 
@@ -306,7 +307,7 @@ var gameCanvas = {
 	       		ctx.font = "25px Comic Sans Ms";
 	       		ctx.fillStyle = "black";
 	        	ctx.fillText("SCORE: " + score, this.x, this.y);
-			ctx.fillText("HIGH SCORE: " + highScore, this.x, this.y + 30);
+			ctx.fillText("HIGH SCORE: " + highScore, 775, this.y);
 	
   	}
    }
