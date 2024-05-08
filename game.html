@@ -1,6 +1,6 @@
 <DOCTYPE!html>
 <html>
-<title> Crappy Bird (beta) </title>
+<title> Crappy Bird </title>
 <style>
 
 body {
@@ -42,7 +42,7 @@ Start Game
 <h2 
 id="high" 
 style="color:white; position: relative; left: 640px; bottom: 30px; font-size: 40;">
-High Score: 
+ 
 </h2>
 
 <button  
@@ -61,7 +61,12 @@ High Score:
 	Dark Mode 
 </button>
 
-
+<button
+	id="changeColor"
+	onclick="changeColor()"
+	style="position: relative; left: 550;">
+	Change Colour
+</button>
 
 
 
@@ -77,10 +82,13 @@ var block;
 var bird;
 var audio = new Audio('https://www.myinstants.com/media/sounds/wideputinfull.mp3');
 var audio2 = new Audio('https://www.myinstants.com/media/sounds/metal-pipe-clang.mp3');
+var audio3 = new Audio('https://www.myinstants.com/media/sounds/nfl.mp3');
 var score = 0;
 var highScore = localStorage.getItem('highScore') || 0;
 var scoreLabel;
+var defaultColor = "purple";
 var interval = setInterval(updateCanvas, 20);
+document.getElementById('high').innerHTML = "High Score: " + highScore
 
 	function startGame() {
 		gameCanvas.start();
@@ -97,9 +105,19 @@ var interval = setInterval(updateCanvas, 20);
 		audio.play();
 		audio.loop = true;
 		audio2.pause();	
+		audio3.pause();
 		document.getElementById('shut').innerHTML = ""
+		document.getElementById('shut').style.border = "black"
+		document.getElementById('shut').style.background = "black"
 		document.getElementById('up').innerHTML = ""
+		document.getElementById('up').style.border = "black"
 		document.getElementById('high').innerHTML = ""
+		document.getElementById('changeColor').innerHTML = ""
+		document.getElementById('changeColor').style.left = "0px"
+		document.getElementById('changeColor').style.bottom = "0px"
+		document.getElementById('changeColor').style.border = "black"
+		document.getElementById('changeColor').style.background = "black"
+		score = 0;
    }
 
 var gameCanvas = {
@@ -111,6 +129,7 @@ var gameCanvas = {
 		this.context = this.canvas.getContext("2d");
 		document.body.insertBefore(this.canvas, document.body.childNodes[0]);
 	}
+	
    }
 
 
@@ -131,7 +150,7 @@ var gameCanvas = {
 
 	this.draw = function() {
 		ctx = gameCanvas.context;
-		ctx.fillStyle = "black";
+		ctx.fillStyle = "green";
 		ctx.fillRect(this.x, this.y, width, height);
    }
   
@@ -147,9 +166,9 @@ var gameCanvas = {
 			this.y = canvasHeight - height;
 			this.x = canvasWidth;
 			score++;
+     }
    }
-  }
- }
+ } 
 
 
 	function createBird() {
@@ -164,7 +183,7 @@ var gameCanvas = {
 
 	this.draw = function() {
         	ctx = gameCanvas.context;
-        	ctx.fillStyle = "black";
+        	ctx.fillStyle = "green";
         	ctx.fillRect(this.x, this.y, this.width, this.height);
     }
 
@@ -195,11 +214,24 @@ var gameCanvas = {
 		this.x = x;
 		this.y = playerYPosition;
 
+	this.changeColor = function(color) {
+		this.color = color;
+   }
+
+this.color = defaultColor;
 
 	this.draw = function() {
 		ctx = gameCanvas.context;
-		ctx.fillStyle = "purple";
+		ctx.fillStyle = this.color;
 		ctx.fillRect(this.x, this.y, this.width, this.height);
+		ctx.fillStyle = "black";
+		ctx.fillRect(this.x + 23, this.y + 1, 7, 7);
+		ctx.fillStyle = "white";
+		ctx.fillRect(this.x + 17, this.y + 1, 7, 7);
+		ctx.fillStyle = "yellow";
+		ctx.fillRect(this.x + 30, this.y + 10, 20, 10);
+		ctx.fillStyle = "violet";
+		ctx.fillRect(this.x + 5, this.y + 15, 13, 7);
    }
 
 	this.makeFall = function() {
@@ -249,14 +281,15 @@ var gameCanvas = {
 	   var blockRight = block.x + block.width
 	   var blockTop = block.y
 	
-	
+	  
 
 
 		if (playerRight > blockLeft &&
 	        playerLeft < blockLeft &&
- 	        playerBottom > blockTop) {
-			endGame();
-   }
+ 	        playerBottom > blockTop &&
+		score < 50) {
+			loseGame();
+    }
   }
 
 	function deathBird() {
@@ -276,12 +309,13 @@ var gameCanvas = {
 		if (playerRight > birdLeft &&
 	        playerLeft < birdRight &&
 	        playerBottom > birdTop &&
-	        playerTop < birdBottom) {
-			endGame();
-   }
+	        playerTop < birdBottom &&
+		score < 50) {
+			loseGame();
+    }
   }
 	
-	function endGame() {
+	function loseGame() {
 		document.getElementById('retry').innerHTML = "try again?"
 		document.getElementById('loss').innerHTML = "YOU LOSE! HAHAHA"
 		audio.pause();
@@ -289,7 +323,17 @@ var gameCanvas = {
 		canvas.remove();
 		audio2.play();
 		document.getElementById('shut').innerHTML = "Light Mode"
+		document.getElementById('shut').style.background = "white"
+		document.getElementById('shut').style.border = "1px outset gray"
 		document.getElementById('up').innerHTML = "Dark Mode"
+		document.getElementById('up').style.border = "1px outset grey"
+		document.getElementById('changeColor').innerHTML = "Change Colour"
+		document.getElementById('changeColor').style.left = "540px"
+		document.getElementById('changeColor').style.bottom = "30px"
+		document.getElementById('changeColor').style.background = "white"
+
+		
+
 		if (score > highScore) {
 		 highScore = score;
 		 localStorage.setItem('highScore', highScore);
@@ -308,10 +352,38 @@ var gameCanvas = {
 	       		ctx.fillStyle = "black";
 	        	ctx.fillText("SCORE: " + score, this.x, this.y);
 			ctx.fillText("HIGH SCORE: " + highScore, 775, this.y);
-	
+			if (score == 50) {
+			winGame();
+	     }
   	}
    }
 
+
+	function winGame() {
+		
+		audio.pause();
+		audio3.play();
+		document.getElementById('canvas');
+		canvas.remove();
+		document.getElementById('retry').innerHTML = "Play Again"
+		document.getElementById('loss').innerHTML = "YOU... Win? dang good job, G!"
+		document.getElementById('loss').style.left = 400
+		document.getElementById('shut').innerHTML = "Light Mode"
+		document.getElementById('shut').style.background = "white"
+		document.getElementById('shut').style.border = "1px outset gray"
+		document.getElementById('up').innerHTML = "Dark Mode"
+		document.getElementById('up').style.border = "1px outset grey"
+		document.getElementById('changeColor').innerHTML = "Change Colour"
+		document.getElementById('changeColor').style.left = "540px"
+		document.getElementById('changeColor').style.bottom = "30px"
+		document.getElementById('changeColor').style.background = "white"
+
+		if (score > highScore) {
+		 highScore = score;
+		 localStorage.setItem('highScore', highScore);
+	}
+		document.getElementById('high').innerHTML = "High Score: " + highScore
+   }
 	
 
 
@@ -360,7 +432,12 @@ var gameCanvas = {
 		fallSpeed = 0;
    }
 	
-	
+	function changeColor() {
+		var colors = ["red", "blue", "green", "orange", "yellow", "purple", "cyan", "black", "white", "lime", "salmon", "pink"];
+    		var randomColor = colors[Math.floor(Math.random() * colors.length)];
+		  player.changeColor(randomColor);
+		 defaultColor = randomColor;
+}
 
 	document.addEventListener('mousedown',  function(e) {
 		if (e.button == 0 && !isJumping) {
@@ -370,6 +447,13 @@ var gameCanvas = {
    }
   });
 
+	document.addEventListener('keydown',  function(e) {
+		if (e.keyCode == 32 && !isJumping) {
+		jumpSpeed = -7;
+		isJumping = true;
+		setTimeout(function() { resetJump(); }, 1000);
+   }
+  });
 	
 	function lightMode() {
 		document.getElementById('maybe').style.background = "white";
