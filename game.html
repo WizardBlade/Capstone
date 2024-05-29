@@ -64,11 +64,17 @@ style="color:white; position: relative; left: 640px; bottom: 30px; font-size: 40
 <button
 	id="changeColor"
 	onclick="changeColor()"
-	style="position: relative; left: 550;">
+	style="position: relative; left: 550; ">
 	Change Colour
 </button>
-
-
+<button
+	onclick="stopAudio()">
+Sounds Off
+</button>
+<button
+	onclick="startAudio()">
+Sounds On
+</button>
 
 <script>
 var canvasWidth = 1000;
@@ -95,7 +101,7 @@ document.getElementById('high').innerHTML = "High Score: " + highScore
 		player = new createPlayer(30, 30, 30);
 		block = new createBlock();
 		bird = new createBird();
-		scoreLabel = new createScoreLabel(10, 30);
+		scoreLabel = new createScoreLabel(10, 20);
 		document.getElementById('canvas').style.background = "#ADD8E6"
 		document.getElementById('canvas').style.border = "4px outset red"
 		document.getElementById('canvas').style.height = "500"
@@ -132,8 +138,16 @@ var gameCanvas = {
 	
    }
 
-
-	
+	function stopAudio() {
+		audio.volume = 0.0;
+		audio2.volume = 0.0;;
+		audio3.volume = 0.0;;
+}
+	function startAudio() {
+		audio.volume = 1.0;
+		audio2.volume = 1.0;
+		audio3.volume = 1.0;
+}	
 	
 	
   
@@ -154,21 +168,25 @@ var gameCanvas = {
 		ctx.fillRect(this.x, this.y, width, height);
    }
   
+	
+
 	this.attackPlayer = function() {
 		this.x -= speed;
 		this.returnToAttackPosition();
     }
 	this.returnToAttackPosition = function() {
-		if (this.x < 0) {
+		if (this.x + width < 0) {
 			width = randomNumber(30, 75);
 			height = randomNumber(100, 300);
 			speed = randomNumber(6, 8);
 			this.y = canvasHeight - height;
 			this.x = canvasWidth;
 			score++;
+			
      }
    }
  } 
+
 
 
 	function createBird() {
@@ -193,7 +211,7 @@ var gameCanvas = {
     }
 
 	this.returnToAttackPosition = function() {
-        	if (this.x < 0) {
+        	if (this.x + initialWidth < 0) {
 			this.width = randomNumber(30, 75);
 			this.height = randomNumber(50, 200);
 			this.y = 0;
@@ -237,7 +255,7 @@ this.color = defaultColor;
 	this.makeFall = function() {
 		if (!isJumping) {
 			this.y += fallSpeed;
-			fallSpeed += 0.5;
+			fallSpeed += 0.4;
 			this.stopPlayer();
    }
   }
@@ -257,8 +275,9 @@ this.color = defaultColor;
 
 	this.jump = function() {
 		if (isJumping && jumpSpeed < 0) {
-			this.y += jumpSpeed;
-			jumpSpeed += 0.2;
+			this.y += jumpSpeed - 0.4;
+			jumpSpeed += 0.3;
+			fallSpeed = 0;
 		} else {
 			isJumping = false;
 			 
@@ -287,7 +306,7 @@ this.color = defaultColor;
 		if (playerRight > blockLeft &&
 	        playerLeft < blockLeft &&
  	        playerBottom > blockTop &&
-		score < 50) {
+		score < 100) {
 			loseGame();
     }
   }
@@ -310,7 +329,7 @@ this.color = defaultColor;
 	        playerLeft < birdRight &&
 	        playerBottom > birdTop &&
 	        playerTop < birdBottom &&
-		score < 50) {
+		score < 100) {
 			loseGame();
     }
   }
@@ -331,6 +350,7 @@ this.color = defaultColor;
 		document.getElementById('changeColor').style.left = "540px"
 		document.getElementById('changeColor').style.bottom = "30px"
 		document.getElementById('changeColor').style.background = "white"
+		
 
 		
 
@@ -352,11 +372,13 @@ this.color = defaultColor;
 	       		ctx.fillStyle = "black";
 	        	ctx.fillText("SCORE: " + score, this.x, this.y);
 			ctx.fillText("HIGH SCORE: " + highScore, 775, this.y);
-			if (score == 50) {
+			if (score == 100) {
 			winGame();
 	     }
   	}
    }
+
+	
 
 
 	function winGame() {
@@ -412,7 +434,8 @@ this.color = defaultColor;
 
 		scoreLabel.text = "SCORE: " + score;
 		scoreLabel.draw();
-
+		
+		
 	
 
    }
@@ -429,7 +452,7 @@ this.color = defaultColor;
 
 	function resetJump() {
 		jumpSpeed = 0;
-		fallSpeed = 0;
+		
    }
 	
 	function changeColor() {
@@ -443,7 +466,7 @@ this.color = defaultColor;
 		if (e.button == 0 && !isJumping) {
 		jumpSpeed = -7;
 		isJumping = true;
-		setTimeout(function() { resetJump(); }, 1000);
+		
    }
   });
 
@@ -451,16 +474,22 @@ this.color = defaultColor;
 		if (e.keyCode == 32 && !isJumping) {
 		jumpSpeed = -7;
 		isJumping = true;
-		setTimeout(function() { resetJump(); }, 1000);
+		
    }
   });
 	
 	function lightMode() {
 		document.getElementById('maybe').style.background = "white";
+		document.getElementById('high').style.color = "black";	
+		document.getElementById('changeColor').style.background = "black";
+		document.getElementById('changeColor').style.color = "white";
 }
 
 	function darkMode() {
 		document.getElementById('maybe').style.background = "black";
+		document.getElementById('high').style.color = "white";
+		document.getElementById('changeColor').style.background = "white";
+		document.getElementById('changeColor').style.color = "black";
 }
 
 
