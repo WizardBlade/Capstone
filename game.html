@@ -7,15 +7,43 @@ body {
 	background:black
    }
 
+.start {
+text-align: center;
+margin: auto;
+display: block;
+width: 200;
+height: 200;
+position: absolute;
+top: 0;
+bottom: 0;
+left: 0;
+right: 0;
+}
+
 canvas {
-	position:relative;
-	left:250px;
-	top:100px;
+	 padding: 0;
+    margin: auto;
+    display: block;
+    width: 800px;
+    height: 600px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
 	background-image: url('https://user-images.githubusercontent.com/18351809/46888871-624a3900-ce7f-11e8-808e-99fd90c8a3f4.png');
 	border:4px outset red;
-
    }
-#ADD8E6
+
+.container {
+ 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 
 </style>
 
@@ -26,31 +54,36 @@ canvas {
 
 <body id="maybe">
 
+<div class="start">
 <button 
 	type="button"
 	id="retry"
-	style="position: relative; top: 300px; left: 650; font-size: 50; font-family: times new roman; color: purple; background-color:grey; border-color:red;"
+	style="font-family: times new roman; font-size: 40; color: purple; background-color:grey; border-color:red;"
 	onclick= "startGame()"> 
 Start Game
 </button>
+</div>
 
 <h1 
+	class = "container"
 	id="loss"
-	style="font-family: comic sans ms; color: magenta; font-size: 50; position: relative; left: 500px;">
+	style="font-family: comic sans ms; color: magenta; font-size: 50; height: 100px; ">
 </h1>
 
 <h2 
+class = "container"
 id="high" 
-style="color:white; position: relative; left: 640px; bottom: 30px; font-size: 40;">
+style="color:white;  font-size: 40;">
  
 </h2>
 
 <h3
+class = "container"
 id="scor"
-style="color:white; position: relative; left: 640px; bottom: 40px; font-size: 30;">
+style="color:white; ; font-size: 30;">
 
 </h3>
-https://www.myinstants.com/media/sounds/wideputinfull.mp3
+
 
 <script>
 var canvasWidth = 1000;
@@ -62,7 +95,7 @@ var jumpSpeed = -7;
 var fallSpeed = 0.5;
 var block;
 var bird;
-var audio = new Audio('https://dorar.at/LARGE/PuretuneMp3/F0aUp4VoC5Hjxt2VzMSE3g/1717462800/201708/1229.mp3');
+var audio = new Audio('https://www.myinstants.com/media/sounds/wide-putin-walking-but-hes-always-in-frame-full-version.mp3');
 var audio2 = new Audio('https://www.myinstants.com/media/sounds/metal-pipe-clang.mp3');
 var audio3 = new Audio('https://www.myinstants.com/media/sounds/nfl.mp3');
 var score = 0;
@@ -129,7 +162,7 @@ var gameCanvas = {
 	function createBlock() {
 	   var width = randomNumber(30, 75);
 	   var height = randomNumber(50, 150);
-	   var speed = 7;
+	   var speed = randomNumber(6, 9);
 
 		this.x = canvasWidth;
 		this.y = canvasHeight - height;
@@ -151,7 +184,7 @@ var gameCanvas = {
 		if (this.x + width < 0) {
 			width = randomNumber(30, 75);
 			height = randomNumber(100, 300);
-			speed = 7;
+			speed = randomNumber(6, 9);
 			this.y = canvasHeight - height;
 			this.x = canvasWidth;
 			score++;
@@ -165,7 +198,7 @@ var gameCanvas = {
 	function createBird() {
 	   var initialWidth = randomNumber(30, 75);
 	   var initialHeight = randomNumber(50, 200);
-	   var speed = 7;
+	   var speed = randomNumber(6, 9);
 
 		this.x = canvasWidth;
 		this.y = 0;
@@ -187,6 +220,7 @@ var gameCanvas = {
         	if (this.x + initialWidth < 0) {
 			this.width = randomNumber(30, 75);
 			this.height = randomNumber(50, 200);
+			this.speed = randomNumber(6, 9);
 			this.y = 0;
 			this.x = canvasWidth;
         }
@@ -350,13 +384,13 @@ this.color = defaultColor;
 		document.getElementById('canvas');
 		canvas.remove();
 		document.getElementById('retry').innerHTML = "Play Again"
-		document.getElementById('loss').innerHTML = "YOU... Win? dang good job, G!"
+		document.getElementById('loss').innerHTML = "YOU... Win? dang good job!"
 		document.getElementById('loss').style.left = 400
 
-		if (score > highScore) {
-		 highScore = score;
+		
+		 highScore = 100;
 		 localStorage.setItem('highScore', highScore);
-	}
+	
 		document.getElementById('high').innerHTML = "High Score: " + highScore
    }
 	
@@ -415,6 +449,9 @@ this.color = defaultColor;
 		  player.changeColor(randomColor);
 		 defaultColor = randomColor;
 }
+
+	
+		
 
 	document.addEventListener('mousedown',  function(e) {
 		if (e.button == 0 && !isJumping) {
