@@ -12,7 +12,7 @@ text-align: center;
 margin: auto;
 display: block;
 width: 200;
-height: 200;
+height: 100;
 position: absolute;
 top: 0;
 bottom: 0;
@@ -22,17 +22,18 @@ right: 0;
 
 canvas {
 	 padding: 0;
-    margin: auto;
-    display: block;
-    width: 800px;
-    height: 600px;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 2;
-	background-image: url('https://user-images.githubusercontent.com/18351809/46888871-624a3900-ce7f-11e8-808e-99fd90c8a3f4.png');
+	margin: auto;
+	display: block;
+	width: 800px;
+	height: 600px;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 2;
+	background-image: url('https://healeycodes.com/_next/image?url=%2Fposts%2Fflappy-bird%2Fflappy-bird.gif&w=640&q=100');
+	background-size: 800px;
 	border:4px outset red;
    }
 
@@ -67,7 +68,7 @@ Start Game
 <h1 
 	class = "container"
 	id="loss"
-	style="font-family: comic sans ms; color: magenta; font-size: 50; height: 100px; ">
+	style="font-family: comic sans ms; color: magenta; font-size: 50; ">
 </h1>
 
 <h2 
@@ -80,7 +81,7 @@ style="color:white;  font-size: 40;">
 <h3
 class = "container"
 id="scor"
-style="color:white; ; font-size: 30;">
+style="color:white; ; font-size: 30; height: 100;">
 
 </h3>
 
@@ -197,7 +198,7 @@ var gameCanvas = {
 
 	function createBird() {
 	   var initialWidth = randomNumber(30, 75);
-	   var initialHeight = randomNumber(50, 200);
+	   var initialHeight = randomNumber(50, 150);
 	   var speed = randomNumber(6, 9);
 
 		this.x = canvasWidth;
@@ -219,7 +220,7 @@ var gameCanvas = {
 	this.returnToAttackPosition = function() {
         	if (this.x + initialWidth < 0) {
 			this.width = randomNumber(30, 75);
-			this.height = randomNumber(50, 200);
+			this.height = randomNumber(50, 300);
 			this.speed = randomNumber(6, 9);
 			this.y = 0;
 			this.x = canvasWidth;
